@@ -1,4 +1,4 @@
-package com.example.loginauthapi.domain.user;
+package com.example.loginauthapi.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,17 +6,26 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
-@Table(name = "users")
+import java.util.UUID;
+
+@Entity()
+@Table(name = "users-informations")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID userId;
+
+    @Column
     private String name;
-    private String email;
-    private String password;
+
+    @Column
+    private String position;
+
+    @Column
+    private String sector;
 }
