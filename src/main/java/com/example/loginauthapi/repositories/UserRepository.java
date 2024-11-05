@@ -1,10 +1,11 @@
 package com.example.loginauthapi.repositories;
 
-import com.example.loginauthapi.domain.user.User;
+import com.example.loginauthapi.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.UUID;
 
-public interface UserRepository extends JpaRepository<User, String> {
-    Optional<User> findByEmail(String email);
+@Repository
+public interface UserRepository extends JpaRepository<User, UUID> {
 }
