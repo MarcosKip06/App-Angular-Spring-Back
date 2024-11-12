@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity()
-@Table(name = "users-informations")
+@Table(name = "users")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -18,7 +18,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID userId;
+    private String userId;
 
     @Column
     private String name;
@@ -28,4 +28,10 @@ public class User {
 
     @Column
     private String sector;
+
+    @Column
+    private String email;
+
+    @Column
+    private String password;
 }

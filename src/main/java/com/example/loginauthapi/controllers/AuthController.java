@@ -1,11 +1,9 @@
 package com.example.loginauthapi.controllers;
 
-import com.example.loginauthapi.entity.UserAuth;
 import com.example.loginauthapi.dto.LoginRequestDTO;
 import com.example.loginauthapi.dto.RegisterRequestDTO;
-import com.example.loginauthapi.dto.ResponseDTO;
 import com.example.loginauthapi.infra.security.TokenService;
-import com.example.loginauthapi.repositories.UserAuthRepository;
+import com.example.loginauthapi.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,35 +18,27 @@ import java.util.Optional;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final UserAuthRepository repository;
-    private final PasswordEncoder passwordEncoder;
-    private final TokenService tokenService;
+
+    private final AuthService authService;
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginRequestDTO body){
-        UserAuth user = this.repository.findByEmail(body.email()).orElseThrow(() -> new RuntimeException("User not found"));
-        if(passwordEncoder.matches(body.password(), user.getPassword())) {
-            String token = this.tokenService.generateToken(user);
-            return ResponseEntity.ok(new ResponseDTO(user.getName(), token));
-        }
-        return ResponseEntity.badRequest().build();
-    }
 
+        try {
+            return ResponseEntity.ok(this.authService.login(body));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody RegisterRequestDTO body){
-        Optional<UserAuth> user = this.repository.findByEmail(body.email());
+    public ResponseEntity register(@RequestBody RegisterRequestDTO body) {
 
-        if(user.isEmpty()) {
-            UserAuth newUser = new UserAuth();
-            newUser.setPassword(passwordEncoder.encode(body.password()));
-            newUser.setEmail(body.email());
-            newUser.setName(body.name());
-            this.repository.save(newUser);
-
-            String token = this.tokenService.generateToken(newUser);
-            return ResponseEntity.ok(new ResponseDTO(newUser.getName(), token));
+        try {
+            return ResponseEntity.ok(this.authService.register(body));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.badRequest().build();
     }
+
 }

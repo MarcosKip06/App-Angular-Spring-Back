@@ -17,7 +17,7 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public void createUser(UserDTO userDto) {
+    public String createUser(UserDTO userDto) {
         User user = new User();
 
         user.setName(userDto.name());
@@ -25,34 +25,36 @@ public class UserService {
         user.setSector(userDto.sector());
 
         userRepository.save(user);
+        return "User created.";
     }
 
     public List<UserDTO> findAllUsers() {
         List<User> users = userRepository.findAll();
 
         return users.stream()
-                .map(user -> new UserDTO(user.getName(), user.getPosition(), user.getSector()))
+                .map(user -> new UserDTO(user.getName(), user.getEmail(), user.getPosition(), user.getSector()))
                 .toList();
     }
 
-    public UserDTO findUserByUUID(UUID userId) {
+    public UserDTO findUserByUUID(String userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        return new UserDTO(user.getName(), user.getPosition(), user.getSector());
+        return new UserDTO(user.getName(), user.getEmail(), user.getPosition(), user.getSector());
     }
 
-    public UserDTO updateUser(UUID userId, UserDTO userDto) {
+    public String updateUser(String userId, UserDTO userDto) {
        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
        user.setName(userDto.name());
        user.setPosition(userDto.position());
        user.setSector(userDto.sector());
 
-       User updatedUser = userRepository.save(user);
+       userRepository.save(user);
 
-       return new UserDTO(updatedUser.getName(), updatedUser.getPosition(), updatedUser.getSector());
+       return "User updated.";
     }
 
-    public void deleteUser(UUID userId) {
+    public String deleteUser(String userId) {
         userRepository.deleteById(userId);
+        return "User deleted.";
     }
 
 
